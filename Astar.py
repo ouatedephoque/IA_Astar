@@ -4,8 +4,65 @@ from math import sqrt
 connections = [] # Create our array of connections
 positions = [] # Create our array of positions
 
-def Astar(townA, townB):
-    print("tg")
+class Town :
+    def __init__(self, name):
+      self.name = name
+
+    def final(self, history):
+        for connection in connections:
+            if(connection["A"] == self.name and connection["B"] not in history):
+                    return False;
+            elif(connection["B"] == self.name and connection["A"] not in history):
+                    return False;
+        return True
+
+    def applicableOps(self, history, funcHeuristique):
+        ops = []
+
+        for connection in connections:
+            if(connection["A"] == self.name and connection["B"] not in history):
+                    ops.append({"name" : connection["B"], "resultHeur" : funcHeuristique(self.name, connection["B"])})
+            elif(connection["B"] == self.name and connection["A"] not in history):
+                    ops.append({"name" : connection["A"], "resultHeur" : funcHeuristique(self.name, connection["A"])})
+        return ops
+
+    def legal(self):
+        if(self.name in connections):
+            return True
+        else:
+            return False
+
+    def apply(self, op) :
+        newTown = Town(op)
+        # Si on veut se souveni r du chemin :
+        newTown.parent = self
+        newTown.op = op
+
+        return newTown
+
+def Astar(townA, townB, funcHeuristique):
+    frontiere = [townA]
+    history = []
+
+    while frontiere :
+        townVisited = Town(frontiere.pop())
+        history.append(townVisited.name)
+
+        if townVisited.final(history):
+            return townVisited.name
+
+        ops = townVisited.applicableOps(history, funcHeuristique)
+        ops.sort(key = lambda op:op['resultHeur'])
+
+        for op in ops :
+            newTown = townVisited.apply(op['name'])
+            if(newTown.name not in frontiere) and (newTown.name not in history) and newTown.legal() :
+                frontiere.append(newTown.name)
+
+
+
+
+    return "Pas de solution "
 
 def h0(n):
     return 0
@@ -98,8 +155,4 @@ if __name__ == "__main__":
     parseConnection(connectionFile)
     parsePosition(positionFile)
 
-    print(h0("Hamburg"))
-    print(h1("Hamburg", "Berlin"))
-    print(h2("Hamburg", "Berlin"))
-    print(h3("Hamburg", "Berlin"))
-    print(h4("Hamburg", "Berlin"))
+    Astar("Warsaw", "Lisbon", h1);
