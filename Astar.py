@@ -1,66 +1,38 @@
 __author__ = 'jeshon.assuncao & rey.tom'
 from math import sqrt
+from Town import Town
 
 connections = [] # Create our array of connections
 positions = [] # Create our array of positions
 
-class Town :
-    def __init__(self, name):
-      self.name = name
-
-    def final(self, history):
-        for connection in connections:
-            if(connection["A"] == self.name and connection["B"] not in history):
-                    return False;
-            elif(connection["B"] == self.name and connection["A"] not in history):
-                    return False;
-        return True
-
-    def applicableOps(self, history, funcHeuristique):
-        ops = []
-
-        for connection in connections:
-            if(connection["A"] == self.name and connection["B"] not in history):
-                    ops.append({"name" : connection["B"], "resultHeur" : funcHeuristique(self.name, connection["B"])})
-            elif(connection["B"] == self.name and connection["A"] not in history):
-                    ops.append({"name" : connection["A"], "resultHeur" : funcHeuristique(self.name, connection["A"])})
-        return ops
-
-    def legal(self):
-        if(self.name in connections):
-            return True
-        else:
-            return False
-
-    def apply(self, op) :
-        newTown = Town(op)
-        # Si on veut se souveni r du chemin :
-        newTown.parent = self
-        newTown.op = op
-
-        return newTown
-
 def Astar(townA, townB, funcHeuristique):
-    frontiere = [townA]
+    townVisited = Town(townA)
+
+    frontiere = [townVisited.name]
     history = []
 
     while frontiere :
-        townVisited = Town(frontiere.pop())
-        history.append(townVisited.name)
+        town = Town(frontiere.pop(0))
+        history.append(town.name)
 
-        if townVisited.final(history):
-            return townVisited.name
+        if town.final(history, townB):
+            return town.name
 
-        ops = townVisited.applicableOps(history, funcHeuristique)
+        ops = town.applicableOps(history, funcHeuristique, connections)
         ops.sort(key = lambda op:op['resultHeur'])
 
+        print("[Town in visit] : ",town.name)
+        print("[History] : ",history)
+        print("[Childs] : ", ops)
+
         for op in ops :
-            newTown = townVisited.apply(op['name'])
-            if(newTown.name not in frontiere) and (newTown.name not in history) and newTown.legal() :
+            newTown = town.apply(op['name'])
+
+            if(newTown.name not in frontiere) and (newTown.name not in history) and newTown.legal(connections) :
                 frontiere.append(newTown.name)
 
-
-
+        print("[Frontiere] : ",frontiere)
+        print("\n")
 
     return "Pas de solution "
 
@@ -155,4 +127,4 @@ if __name__ == "__main__":
     parseConnection(connectionFile)
     parsePosition(positionFile)
 
-    Astar("Warsaw", "Lisbon", h1);
+    print(Astar("Brussels", "Paris", h2));
