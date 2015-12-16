@@ -1,4 +1,4 @@
-__author__ = 'jeshon.assuncao'
+__author__ = 'jeshon.assuncao & tom.rey'
 
 class Town :
     def __init__(self, name, resultHeur=0):
@@ -19,9 +19,9 @@ class Town :
 
         for connection in connections:
             if(connection["A"] == self.name and connection["B"] not in history):
-                    ops.append(Town(connection['B'], funcHeuristique(self.name, connection['B'])))
+                    ops.append(Town(connection['B'], funcHeuristique(self.name, connection['B'])+ int(connection['Dist'])))
             elif(connection["B"] == self.name and connection["A"] not in history):
-                    ops.append(Town(connection['A'], funcHeuristique(self.name, connection['A'])))
+                    ops.append(Town(connection['A'], funcHeuristique(self.name, connection['A'])+ int(connection['Dist'])))
         return ops
 
     def legal(self, connections):

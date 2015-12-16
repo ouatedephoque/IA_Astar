@@ -1,13 +1,20 @@
 __author__ = 'jeshon.assuncao & rey.tom'
+# -*-coding:Latin-1 -* 
 from math import sqrt
 from Town import Town
+
+# 1) Le choix de l'heuristique influence le nombre de noeud visites, même si on
+# obtiendra toujours un résultat optimal. Certaines heuristiques visiteront plus ou
+# moin de noeuds avant d'arriver à la destination finale.
+# 2) Les heuristiques h1 et h2 entre Vienne et Belgrade.
+# 3) L'heuristiques numéro 3 semble la plus proche de la réalité et donne des résultats idéaux
 
 connections = [] # Create our array of connections
 positions = [] # Create our array of positions
 
 def Astar(townA, townB, funcHeuristique):
     townVisited = Town(townA)
-
+    townFinal = Town(townB)
     frontiere = []
     frontiere.append(townVisited)
     history = []
@@ -18,6 +25,9 @@ def Astar(townA, townB, funcHeuristique):
 
         if town.final(history, townB):
             return town.name
+
+        #if townFinal.final(frontiere,townB):   Test si la ville finale est dans frontière
+            #return townB.name
 
         ops = town.applicableOps(history, funcHeuristique, connections)
 
@@ -38,13 +48,14 @@ def Astar(townA, townB, funcHeuristique):
                 frontiere.append(newTown)
 
         frontiere.sort(key = lambda x:x.resultHeur)
-
+        if (town.final(history, townB) == True):
+            return town.name
         print("[Frontiere] : ",frontiere)
         print("\n")
 
     return "Pas de solution "
 
-def h0(n):
+def h0(n,B):
     return 0
 
 # Distance between n and B on X axis
@@ -108,9 +119,7 @@ def parseConnection(file):
 
 def parsePosition(file):
     for ligne in file.readlines():
-
         position = {} # Create our dictionary of one position
-
         i = 0
         for word in ligne.split(" "):
             word = word.replace('\n', '') # Delete the line return
@@ -135,4 +144,13 @@ if __name__ == "__main__":
     parseConnection(connectionFile)
     parsePosition(positionFile)
 
-    print(Astar("Warsaw", "Lisbon", h2));
+    print("Using h0")
+    print(Astar("Brussels", "Madrid", h0))
+    print("Using h1")
+    print(Astar("Brussels", "Madrid", h1))
+    print("Using h2")
+    #print(Astar("Brussels", "Madrid", h2))
+    #print("Using h3")
+    #print(Astar("Brussels", "Madrid", h3))
+    #print("Using h4")
+    #print(Astar("Brussels", "Madrid", h4))
