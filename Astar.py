@@ -8,28 +8,36 @@ positions = [] # Create our array of positions
 def Astar(townA, townB, funcHeuristique):
     townVisited = Town(townA)
 
-    frontiere = [townVisited.name]
+    frontiere = []
+    frontiere.append(townVisited)
     history = []
 
     while frontiere :
-        town = Town(frontiere.pop(0))
+        town = frontiere.pop(0)
         history.append(town.name)
 
         if town.final(history, townB):
             return town.name
 
         ops = town.applicableOps(history, funcHeuristique, connections)
-        ops.sort(key = lambda op:op['resultHeur'])
 
-        print("[Town in visit] : ",town.name)
-        print("[History] : ",history)
+        print("[Town in visit] : ", town.name)
+        print("[History] : ", history)
         print("[Childs] : ", ops)
 
         for op in ops :
-            newTown = town.apply(op['name'])
+            newTown = op
+            newTownIsInFrontier = False
 
-            if(newTown.name not in frontiere) and (newTown.name not in history) and newTown.legal(connections) :
-                frontiere.append(newTown.name)
+            for frontiereTownName in frontiere:
+                if(newTown.name == frontiereTownName.name):
+                    newTownIsInFrontier = True
+                    break
+
+            if newTownIsInFrontier == False and (newTown.name not in history) and newTown.legal(connections) :
+                frontiere.append(newTown)
+
+        frontiere.sort(key = lambda x:x.resultHeur)
 
         print("[Frontiere] : ",frontiere)
         print("\n")
@@ -127,4 +135,4 @@ if __name__ == "__main__":
     parseConnection(connectionFile)
     parsePosition(positionFile)
 
-    print(Astar("Brussels", "Paris", h2));
+    print(Astar("Warsaw", "Lisbon", h2));

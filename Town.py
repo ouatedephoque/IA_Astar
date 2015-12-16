@@ -1,16 +1,12 @@
 __author__ = 'jeshon.assuncao'
 
 class Town :
-    def __init__(self, name):
-      self.name = name
+    def __init__(self, name, resultHeur=0):
+        self.name = name
+        self.resultHeur = resultHeur
 
-    #def final(self, history, connections):
-    #   for connection in connections:
-     #       if(connection["A"] == self.name and connection["B"] not in history):
-     #           return False;
-     #       elif(connection["B"] == self.name and connection["A"] not in history):
-     #           return False;
-     #   return True
+    def __repr__(self):
+        return (self.name + ' - ' + str(self.resultHeur))
 
     def final(self, history, townB):
         if(townB in history):
@@ -23,11 +19,10 @@ class Town :
 
         for connection in connections:
             if(connection["A"] == self.name and connection["B"] not in history):
-                    ops.append({"name" : connection["B"], "resultHeur" : funcHeuristique(self.name, connection["B"])})
+                    ops.append(Town(connection['B'], funcHeuristique(self.name, connection['B'])))
             elif(connection["B"] == self.name and connection["A"] not in history):
-                    ops.append({"name" : connection["A"], "resultHeur" : funcHeuristique(self.name, connection["A"])})
+                    ops.append(Town(connection['A'], funcHeuristique(self.name, connection['A'])))
         return ops
-
 
     def legal(self, connections):
         for connection in connections:
