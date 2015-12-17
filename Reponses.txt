@@ -1,0 +1,9 @@
+   Les heuristiques h3 et h4 car elle prenne en compte la distance en x et en y
+
+1) Le choix de l'heuristique influence le nombre de noeud visites, même si on
+   obtiendra toujours un résultat optimal. Certaines heuristiques visiteront plus ou
+   moins de noeuds avant d'arriver à la destination finale.
+
+2) Les heuristiques h1 et h2 entre Vienne et Belgrade.
+
+3) L'heuristiques numéro 3 semble la plus proche de la réalité et donne des résultats idéaux

@@ -6,7 +6,7 @@ class Town :
         self.resultHeur = resultHeur
 
     def __repr__(self):
-        return (self.name + ' - ' + str(self.resultHeur))
+        return ('name : ' + self.name + ' - h+g : ' + str(self.resultHeur))
 
     def final(self, history, townB):
         if(townB in history):
